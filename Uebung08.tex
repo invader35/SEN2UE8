@@ -1,0 +1,174 @@
+\documentclass[a4paper,oneside,openany]{tufte-book}
+\usepackage[utf8x]{inputenc}
+\usepackage[german]{babel}
+\usepackage{microtype} % Improves character and word spacing
+\usepackage{booktabs} % Better horizontal rules in tables
+\usepackage{ucs}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{upgreek}
+
+\makeatletter% since we're using commands with @ in their name
+
+\let\origappendix\appendix% save a copy of the original meaning of \appendix
+\renewcommand{\appendix}{%
+  \origappendix% do all the original \appendix stuff
+  \titlecontents{chapter}%
+    [0em] % distance from left margin
+    {\vspace{1.5\baselineskip}\begin{fullwidth}\LARGE\rmfamily\itshape} % above (global formatting of entry)
+    {\hspace*{0em}\appendixname~\thecontentslabel: } % before w/label (label = ``2'')
+    {\hspace*{0em}} % before w/o label
+    {\rmfamily\upshape\qquad\thecontentspage} % filler + page (leaders and page num)
+    [\end{fullwidth}] % after
+  \titleformat{\chapter}%
+    [display]% shape
+    {\relax\ifthenelse{\NOT\boolean{@tufte@symmetric}}{\begin{fullwidth}}{}}% format applied to label+text
+    {\itshape\huge Anhang~\thechapter}% label
+    {0pt}% horizontal separation between label and title body
+    {\huge\rmfamily\itshape}% before the title body
+    [\ifthenelse{\NOT\boolean{@tufte@symmetric}}{\end{fullwidth}}{}]% after the title body
+  \setcounter{secnumdepth}{0}% ``number'' the appendices
+  \renewcommand{\thefigure}{\@arabic\c@figure}% define \thefigure to use only the figure number (1), not A.1
+  \renewcommand{\thetable}{\@arabic\c@table}%
+  %
+  % Add any other special appendix-related code here.
+  %
+}
+\makeatother% restore the special meaning of @
+
+
+\author{Schett Matthias}
+\title{SEN-\"{U}bung 08}
+
+\begin{document}
+
+\definecolor{gray}{rgb}{0.9,0.9,0.9} % background color for the listings
+
+\lstset{language=[Visual]Basic, morekeywords={param, local}, breaklines=true, tabsize=4, showstringspaces=false,backgroundcolor=\color{gray}, numbers=left,
+    basicstyle=\ttfamily} % standard listing settings
+
+\frontmatter
+
+\maketitle
+\tableofcontents
+\mainmatter
+
+\chapter{Aufgabe 1}
+
+\section{L\"{o}sungsidee}
+
+Der Shift Algorithmus erstellt einen Iterator der auf die count .te Stelle im Container zeigt und rotiert dann den Container mit std::rotate, anschließend werden die count letzten Stellen mit der Wert von val
+aufgefüllt.
+Der Iterator für die Mitte und die count letzte Stelle wird mittels std::advance erstellt.
+Der Code findet sich ab Anhang \nameref{chap:Auf1}.
+
+\section{Testf\"{a}lle}
+\begin{fullwidth}
+\lstinputlisting[caption=Ausgabe des Testreibers]{TemplateShift/OutputA1.txt}
+\end{fullwidth}
+\chapter{Aufgabe 2}
+
+\section{L\"{o}sungsidee}
+
+Die Funktion checkSorting prüft die Sortierung in einem per Iteratoren gegebenen Bereich und gibt anschließend die vier in der Aufgabenstellung definierten Zustände zurück.
+Erreicht wird die Prüfung durch eine Iteration über den gegebenen Bereich und der Prüfung ob der Iterator größer oder kleiner ist als der nachfolgende, entsprechend werden Zähler erhöht.
+Nach der Iteration wird, falls ein Zähler gleich groß wie der gegebene Bereich ist, das Ergebnis Ascending, Descending oder EqualOrEmpty zurückgegebenen. Sollte kein Zähler das Kriterium erfüllen,
+dann kann davon ausgegangen werden, dass der Bereich nicht sortiert wird und daher wird UnSorted zurückgegeben.
+Es gibt auch eine Version mit Prädikat, bei dieser verhält es sich gleich nur statt dem Vergleich wird das Ergebnis des Prädikates, welches als bool vorliegen muss, verwendet.
+Der Code findet sich ab Anhang \nameref{chap:Auf2}.
+
+\section{Testf\"{a}lle}
+\begin{fullwidth}
+\lstinputlisting[caption=Ausgabe des Testreibers]{GenericSortCheck/OutputA2.txt}
+\end{fullwidth}
+\chapter{Aufgabe 3}
+
+\section{L\"{o}sungsidee}
+
+Allgemein lässt sich die Laufzeikomplexität nach folgender Formel bestimmen:
+
+\[
+T(n) = a * T(\frac{n}{b}) + f(n)
+\]
+
+Wobei \textbf{a} für die Anzahl and rekursiven Aufrufen steht, $\frac{n}{b}$ für die Anzahl an Unterproblemen und
+\textbf{f(n)} für den Aufwand der Aufteilung des Problemes und zur Anschließenden Kombination der Teillösungen.
+Es gibt 3 Lösungsvarianten für diese Gleichung:
+
+\begin{tabular}{l | p{5cm} | l}
+Fall & Wenn... & Dann.. \\
+\hline
+1 & $ f(n) = \mathcal{O}(n ^{\log_b{(a-\epsilon})}) $ für $ \epsilon > 0 $ & $ T(n) = \Uptheta(n^{\log_b{(a)}}) $\\
+\hline
+2 & $ f(n) = \Uptheta(n^{\log_b{(a)}}) $ & $ T(n) = \Uptheta(n^{\log_b{(a)}} * \log{(n)}) $ \\
+\hline
+3 & $ f(n) = \Omega(n ^{\log_b{(a-\epsilon})}) $ für $ \epsilon > 0 $ % 3.Zeile
+und \newline
+$ a*f(\frac{n}{b}) \leq c*f(n) $ für $ c < 1 $
+& $ T(n) = \Uptheta(f(n)) $ \\ % 3.Zeile
+\end{tabular}
+
+Es wird nun für das erste und das zweite Beispiel der Lösungsweg skiziert für die restlichen Beispiele wird anschließend nur die Lösung angegeben.
+
+\subsection{Beispiel 1}
+
+Angabe: $ T(n) = 3T(\frac{n}{2}) + n^2 $
+
+Daher ist $a = 3, b=2, f(n) = n^2 $ und der $ \log_b{(a)} \approx 1.6 $
+
+$ n^2 \in \Upomega(n^{1.6+\epsilon})$
+
+und $ 3 * (\frac{n}{2})^2 \leq cn^2 $ berrechnet man nun den ersten Ausdruck erhält man
+
+$ \frac{3n^2}{4} \leq cn^2 $ für c = 0.9 z.Bsp
+
+Daher ist die Lösung vom Fall 3 $ T(n) = \Uptheta(n^2) $
+
+\subsection{Beispiel 2}
+
+Angabe: $ T(n) = 12T(\frac{n}{4}) + n $
+
+Daher ist $a = 12, b=4, f(n) = n $ und der $ \log_b{(a)} \approx 1.8 $
+
+$ n \in \mathcal{O}(n^{1.8-\epsilon})$
+
+Daher ist die Lösung vom Fall 1 und $ T(n) = \Uptheta(n^{1.8}) $
+\newpage
+\subsection{Restliche Beispiele}
+
+Hier folgen nun die Lösungen der restlichen Beispiele:
+
+\begin{enumerate}
+\setcounter{enumi}{2}
+  \item $ T(n) = \Uptheta(n) $ \hspace*{2em} Fall 3
+  \item $ T(n) = \Uptheta(n^{1.5}) $ \hspace*{2em} Fall 1
+  \item $ T(n) = \Uptheta(n^2) $ \hspace*{2em} Fall 3
+  \item $ T(n) = \Uptheta(n^3 * \log{(n)}) $ \hspace*{2em} Fall 2
+\end{enumerate}
+
+\backmatter
+
+\appendix
+
+\setboolean{@mainmatter}{true}
+\chapter{Aufgabe 1}\label{chap:Auf1}
+
+\begin{fullwidth}
+\lstinputlisting[caption=Implementierung der Shiftfunktion]{TemplateShift/TemplateShift.h}
+\lstinputlisting[caption=Testtreiber]{TemplateShift/Main.cpp}
+\end{fullwidth}
+
+\chapter{Aufgabe 2}\label{chap:Auf2}
+
+\begin{fullwidth}
+\lstinputlisting[caption=Implementierung der Sortierprüfung]{GenericSortCheck/GenericSortCheck.h}
+\lstinputlisting[caption=Testtreiber]{GenericSortCheck/Main.cpp}
+\end{fullwidth}
+
+\end{document}

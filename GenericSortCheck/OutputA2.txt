@@ -1,0 +1,18 @@
+Test with vector
+
+Test with empty container: EmptyOrEqual
+Test with ascending ordered container: Ascending
+Test with custom predicate and ascending order container: Ascending
+Test with random ordered container: UnSorted
+Test with descending ordered container: Descending
+Test with equal entries container: EmptyOrEqual
+
+
+Test with std::list
+
+Test with empty container: EmptyOrEqual
+Test with ascending ordered container: Ascending
+Test with custom predicate and ascending order container: Ascending
+Test with random ordered container: UnSorted
+Test with descending ordered container: Descending
+Test with equal entries container: EmptyOrEqual
